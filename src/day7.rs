@@ -7,7 +7,7 @@ pub fn input_generator(input: &str) -> Vec<u32> {
 fn part1(input: &Vec<u32>) -> u32{
     let mut best_fuel = 10000000;
     for i in 0..1000{
-        let fuel = input.iter().fold(0, |total, item| total + (i - (*item as i32)).abs() as u32);
+        let fuel = input.iter().fold(0, |total, item| total + ((i - (*item as i32)).abs() as u32));
         if fuel < best_fuel {
             best_fuel = fuel;
         }
@@ -15,6 +15,20 @@ fn part1(input: &Vec<u32>) -> u32{
     return best_fuel as u32;
 }
 
+#[aoc(day7, part2)]
+fn part2(input: &Vec<u32>) -> u32{
+    let mut best_fuel = 1000000000;
+    for i in 0..1000{
+        let fuel = input.iter().fold(0, |total, item| {
+            let d = (i - (*item as i32)).abs() as u32;
+            total + (d * (d+1) >> 1)
+        });
+        if fuel < best_fuel {
+            best_fuel = fuel;
+        }
+    }
+    return best_fuel as u32;
+}
 
 #[cfg(test)]
 mod tests {
@@ -33,9 +47,9 @@ mod tests {
         // println!("hit");
         assert_eq!(part1(&inp), 37);
     }
-    // #[test]
-    // fn part2_example() {
-    //     let inp = input_generator(TESTINPUT);
-    //     assert_eq!(part2(&inp), 26984457539_u64);
-    // }
+    #[test]
+    fn part2_example() {
+        let inp = input_generator(TESTINPUT);
+        assert_eq!(part2(&inp), 168);
+    }
 }
