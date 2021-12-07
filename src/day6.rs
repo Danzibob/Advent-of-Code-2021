@@ -51,13 +51,13 @@ mod tests {
     #[test]
     fn test_gen(){
         let inp = input_generator(TESTINPUT);
-        println!("{:?}", inp);
+        // println!("{:?}", inp);
         assert_eq!(inp, [0,1,1,2,1,0,0,0,0]);
     }
     #[test]
     fn part1_example() {
         let inp = input_generator(TESTINPUT);
-        println!("hit");
+        // println!("hit");
         assert_eq!(part1(&inp), 5934_u64);
     }
     #[test]
