@@ -39,7 +39,7 @@ mod tests {
     fn test_gen(){
         let inp = input_generator(TESTINPUT);
         // println!("{:?}", inp);
-        assert_eq!(inp, [3,4,3,1,2]);
+        assert_eq!(inp, [16,1,2,0,4,2,7,1,2,14]);
     }
     #[test]
     fn part1_ex() {
