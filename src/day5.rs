@@ -14,7 +14,6 @@ pub fn input_generator(input: &str) -> Vec<[u32; 4]> {
                                 .try_into().unwrap();
         problem.push(parts);
     }
-    println!("Returning input parsed");
     return problem;
 }
 
@@ -136,7 +135,7 @@ mod tests {
     use super::*;
     #[test]
     fn test_gen(){
-        println!("{:?}", input_generator(TESTINPUT));
+        assert_eq!(input_generator(TESTINPUT), [[0, 9, 5, 9], [8, 0, 0, 8], [9, 4, 3, 4], [2, 2, 2, 1], [7, 0, 7, 4], [6, 4, 2, 0], [0, 9, 2, 9], [3, 4, 1, 4], [0, 0, 8, 8], [5, 5, 8, 2]]);
     }
     #[test]
     fn part1_day5() {
