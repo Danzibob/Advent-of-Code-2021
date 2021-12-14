@@ -13,7 +13,7 @@ pub fn input_generator(input: &str) -> Vec<u32>{
 }
 
 fn surround(i: usize) -> Vec<usize>{
-    let mut n = Vec::new();
+    let mut n = Vec::with_capacity(8);
     let col = i%WIDTH;
     let row = i/WIDTH;
     if col != 0 {
@@ -63,7 +63,7 @@ fn step(mut input: Vec<u32>) -> Vec<u32>{
         }
         
         add = new_add.iter().cloned().collect();
-        new_add = vec![0; 100];
+        new_add.fill(0);
         // While condition
         done
     }{}
