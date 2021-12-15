@@ -54,6 +54,33 @@ pub fn part1(input: &BTreeMap<i16,BTreeSet<i16>>) -> usize {
     count_paths(input, 0, &mut Vec::with_capacity(10)) // 0 is the start node
 }
 
+fn count_paths2(graph: &BTreeMap<i16,BTreeSet<i16>>, pos: i16, visited: &mut Vec<i16>, double_dipped: bool) -> usize{
+    let mut paths = 0;
+    // println!("Depth: {} | Visited: {:?} | Pos: {}", visited.len(), visited, pos);
+    for node in graph.get(&pos).unwrap() {
+        if *node == 0 { continue }          // Start node
+        if *node == 1 { paths += 1}         // End node
+
+        else if !visited.contains(node) {   // Unvisited node
+
+            if *node > 0 { visited.push(*node); }  // Small cave, log as visited
+
+            paths += count_paths2(graph, *node, visited, double_dipped);    // Recurse
+
+            if *node > 0 { visited.pop(); }        // Un-log to continue recursion
+
+        } else if (*node > 0) && !double_dipped {  // Visited small cave, but we haven't double dipped
+            paths += count_paths2(graph, *node, visited, true);
+        }
+    }
+    paths
+}
+
+#[aoc(day12, part2)]
+pub fn part2(input: &BTreeMap<i16,BTreeSet<i16>>) -> usize {
+    count_paths2(input, 0, &mut Vec::with_capacity(10), false) // 0 is the start node
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -105,5 +132,19 @@ start-RW";
         let inp = input_generator(TESTINPUT2);
         // println!("hit");
         assert_eq!(part1(&inp), 226);
+    }
+
+    #[test]
+    fn part2_test1() {
+        let inp = input_generator(TESTINPUT1);
+        // println!("hit");
+        assert_eq!(part2(&inp), 36);
+    }
+
+    #[test]
+    fn part2_test2() {
+        let inp = input_generator(TESTINPUT2);
+        // println!("hit");
+        assert_eq!(part2(&inp), 3509);
     }
 }
