@@ -11,15 +11,14 @@ pub fn input_generator(input: &str) -> [u64; 9] {
 fn part1(input: &[u64; 9]) ->  u64{
     let mut today = *input;
     // println!("{:?}", today);
-    let mut next_day: [u64; 9] = [0; 9];
+    let mut tmp0: u64;
     for _ in 0..80 {
+        tmp0 = today[0];
         for idx in 1..=8 {
-            next_day[idx-1] = today[idx];
+            today[idx-1] = today[idx];
         }
-        next_day[8] = today[0];
-        next_day[6] += today[0];
-
-        today = next_day;
+        today[8] = tmp0;
+        today[6] += tmp0;
         // println!("{:?}", today);
     }
     return today.iter().sum();
@@ -29,15 +28,14 @@ fn part1(input: &[u64; 9]) ->  u64{
 fn part2(input: &[u64; 9]) ->  u64{
     let mut today = *input;
     // println!("{:?}", today);
-    let mut next_day: [u64; 9] = [0; 9];
-    for _ in 0..256 {
+    let mut tmp0: u64;
+    for _ in 0..80 {
+        tmp0 = today[0];
         for idx in 1..=8 {
-            next_day[idx-1] = today[idx];
+            today[idx-1] = today[idx];
         }
-        next_day[8] = today[0];
-        next_day[6] += today[0];
-
-        today = next_day;
+        today[8] = tmp0;
+        today[6] += tmp0;
         // println!("{:?}", today);
     }
     return today.iter().sum();
