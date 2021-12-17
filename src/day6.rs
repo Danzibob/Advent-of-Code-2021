@@ -29,7 +29,7 @@ fn part2(input: &[u64; 9]) ->  u64{
     let mut today = *input;
     // println!("{:?}", today);
     let mut tmp0: u64;
-    for _ in 0..80 {
+    for _ in 0..256 {
         tmp0 = today[0];
         for idx in 1..=8 {
             today[idx-1] = today[idx];
