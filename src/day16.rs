@@ -22,20 +22,20 @@ impl BitFeed {
         BitFeed::new(data)
     }
 
-    /// Returns the requested number of bits as a u32 option
-    fn take_bits(&mut self, amount: usize) -> Option<u32> {
+    /// Returns the requested number of bits as a u64 option
+    fn take_bits(&mut self, amount: usize) -> Option<u64> {
         if amount + self.pointer > self.data.len() {
             return None;
         } else {
             let bits = &self.data[self.pointer..(self.pointer+amount)];
-            let val = bits.iter().rev().enumerate().fold(0, |acc, (i, b)| acc + ((*b as u32) << i));
+            let val = bits.iter().rev().enumerate().fold(0, |acc, (i, b)| acc + ((*b as u64) << i));
             self.pointer += amount;
             return Some(val);
         }
     }
 }
 
-fn parse_packet_versions(feed: &mut BitFeed) -> u32 {
+fn parse_packet_versions(feed: &mut BitFeed) -> u64 {
     let ver = feed.take_bits(3).unwrap();
     let type_id = feed.take_bits(3).unwrap();
 
@@ -76,12 +76,12 @@ fn parse_packet_versions(feed: &mut BitFeed) -> u32 {
 }
 
 #[aoc(day16, part1)]
-fn part1(input: &str) -> u32 {
+fn part1(input: &str) -> u64 {
     let mut feed = BitFeed::from_hex_str(input);
     parse_packet_versions(&mut feed)
 }
 
-fn parse_packet(feed: &mut BitFeed) -> u32 {
+fn parse_packet(feed: &mut BitFeed, depth: usize) -> u64 {
     let _ver = feed.take_bits(3).unwrap();
     let type_id = feed.take_bits(3).unwrap();
 
@@ -89,50 +89,45 @@ fn parse_packet(feed: &mut BitFeed) -> u32 {
         let mut sum = 0;
         loop {
             let last_bits = feed.take_bits(5).unwrap();
+            sum = sum << 4;
             sum += last_bits & 0xF;
             if last_bits & 0x10 == 0 {break}
         }
-        // print!("  {}", sum);
         return sum;
     }
 
-    let mut args: Vec<u32> = Vec::new();
-    // println!("Diving {}", type_id);
+    let mut args: Vec<u64> = Vec::new();
     if feed.take_bits(1).unwrap() == 0 {
         // Total bit length
         let bit_length = feed.take_bits(15).unwrap() as usize;
         let target_ptr = feed.pointer + bit_length;
         while feed.pointer < target_ptr {
-            args.push(parse_packet(feed));
+            args.push(parse_packet(feed, depth+1));
         }
     } else {
         // Number of packets
         let num_packets = feed.take_bits(11).unwrap();
         for _ in 0..num_packets {
-            args.push(parse_packet(feed));
+            args.push(parse_packet(feed, depth+1));
         }
     }
-    // println!("");
-
-    let v = 
+    
     match type_id {
         0 => args.iter().sum(),
         1 => args.iter().product(),
         2 => *args.iter().min().unwrap(),
         3 => *args.iter().max().unwrap(),
-        5 => (args[0] > args[1]) as u32,
-        6 => (args[0] < args[1]) as u32,
-        7 => (args[0] == args[1]) as u32,
+        5 => (args[0] > args[1]) as u64,
+        6 => (args[0] < args[1]) as u64,
+        7 => (args[0] == args[1]) as u64,
         4 | _ => { panic!("Unexpected type_id: {}", type_id) }
-    };
-    // println!("{}: {:?} -> {}", type_id, args, v);
-    v
+    }
 }
 
 #[aoc(day16, part2)]
-fn part2(input: &str) -> u32 {
+fn part2(input: &str) -> u64 {
     let mut feed = BitFeed::from_hex_str(input);
-    parse_packet(&mut feed)
+    parse_packet(&mut feed, 0)
 }
 
 #[cfg(test)]
